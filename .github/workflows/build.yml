@@ -17,8 +17,8 @@ jobs:
       attestations: write
     strategy:
       matrix:
-        arch: ["arm", "arm64", "x86_64"]
-        androidv: ["14.0.0", "15.0.0"]
+        arch: ["arm64"]
+        androidv: ["15.0.0"]
     name: Build ${{ matrix.androidv }}-${{ matrix.arch }}
     runs-on: ubuntu-24.04
     steps:
@@ -65,23 +65,6 @@ jobs:
           name: Built_MindTheGapps-${{ matrix.androidv }}-${{ matrix.arch }}-${{ env.date }}
           path: vendor_gapps/out/*.*
           if-no-files-found: warn
-
-      - name: Setup SSH
-        if: github.event.inputs.release == 'true' && vars.SF_REPO != ''
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan frs.sourceforge.net >> ~/.ssh/known_hosts
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 0600 ~/.ssh/id_ed25519
-
-      - name: Upload to SourceForge
-        if: github.event.inputs.release == 'true' && vars.SF_REPO != ''
-        working-directory: vendor_gapps/out
-        run: |
-          mkdir -p ${{ matrix.arch }}
-          mkdir -p ${{ matrix.arch }}/${{ env.date }}
-          mv *.* ${{ matrix.arch }}/${{ env.date }}/
-          rsync -avP -e ssh ${{ matrix.arch }} ${{ vars.SF_USER }}@frs.sourceforge.net:/home/frs/project/${{ vars.SF_REPO }}/
 
       - name: Release
         uses: softprops/action-gh-release@v2
