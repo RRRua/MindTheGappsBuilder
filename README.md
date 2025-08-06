@@ -1,2 +1,2 @@
 # MindTheGapps Builder
-It's easy to make with **GitHub Actions**.
+MindTheGapps builds for arm64 variant of Android 15 with GitHub Actions.
